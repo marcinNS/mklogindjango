@@ -34,6 +34,6 @@ url('^newlogin/', include('mklogin.urls')),
                     {'template_name':'registration/password_reset_complete2.html'}),
 ```
 If you don't have a standard url auth yet, You have to also add this line to urlspattern
-'''
+```
 url('^', include('django.contrib.auth.urls'))
-'''
+```
