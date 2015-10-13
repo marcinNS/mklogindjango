@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+{% if form.errors %}
+<p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+    {% if user.is_authenticated %}
+    {% else %}
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-signin">
+        {% csrf_token %}
+        <h2 class="form-signin-heading">Zaloguj się</h2>
+        <label for="inputEmail" class="sr-only">Adres e-mail</label>
+        <input id="id_username" maxlength="254" name="username" type="email" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Hasło</label>
+        <input id="id_password" name="password" type="password" class="form-control" placeholder="Password" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="remember-me"> Zapamiętaj mnie
+          </label>
+        </div>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="login" />
+        <input type="hidden" name="next" value="/newlogin/profile/" />
+    </form>
+    {# Assumes you setup the password_reset view in your URLconf #}
+    <p><a href="{% url 'password_reset' %}">Zapomniałeś hasła?</a></p>
+    {% endif %}
+</div> <!-- /container -->
+{% endblock %}  
