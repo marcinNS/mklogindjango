@@ -19,6 +19,7 @@ INSTALLED_APPS = (
 ```
 and to project urls.py
 ```
+from django.contrib.auth import views
 url('^newlogin/', include('mklogin.urls')),
     url(r'^password_reset/$',views.password_reset,
                     {'template_name': 'registration/password_reset_form2.html'},
