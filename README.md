@@ -16,6 +16,7 @@ INSTALLED_APPS = (
     ...
     'mklogin',
 )
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend','mklogin.models.MyBackend')
 ```
 and to project urls.py
 ```
