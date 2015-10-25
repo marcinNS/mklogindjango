@@ -18,6 +18,7 @@ class MyUser(models.Model):
     sex = models.CharField(max_length=1, choices=SEX)
     miasto = models.CharField(max_length=150, blank=True, null=True)
     kategoria = models.ManyToManyField(Kategoria, blank=True, null=True)
+    activationcode = models.IntegerField()
     
 class MyBackend(object):
     def authenticate(self, username=None, password=None):

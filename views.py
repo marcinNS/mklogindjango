@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.forms.util import ValidationError
+from django.core.mail import send_mail
 #from django.forms.formsets import formset_factory
 
 from . models import MyUser
@@ -50,6 +51,7 @@ def profile(request):
     return render(request, 'account/profile.html', context)
     
 def register(request):
+    import random
     if request.method == 'POST':
         form = MyUserForm(request.POST)
         if form.is_valid(): #and form.cleaned_data['password']==form.cleaned_data['password1']
@@ -58,19 +60,34 @@ def register(request):
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
             user.email = form.cleaned_data['email']
+            user.is_active = False
             user.save()
-            myuser = MyUser.objects.create(user_id=user.id)
+            myuser = MyUser.objects.create(user_id=user.id, activationcode=int(random.random()*1000000))
             myuser.wiek = form.cleaned_data['wiek']
             myuser.sex = form.cleaned_data['sex']
             myuser.miasto = form.cleaned_data['miasto']
             myuser.kategoria = form.cleaned_data['kategoria']
             myuser.save()
             # redirect to a new URL:
+            
+            msg = 'Prosimy aktywować adres e-mail klikając na ten link http://vps151689.ovh.net:8000/newlogin/activate/'+str(myuser.activationcode)+'/'
+            send_mail('Aktywacja konta serwisu', msg, 'from@example.com',[user.email], fail_silently=True)
             return HttpResponseRedirect('/newlogin/')
     else:
         form = MyUserForm(initial={'rejestracja':True})
     context = {'form':form}
     return render(request, 'registration/register.html', context)
+
+def activate(request,kod):
+    try:
+        profil=MyUser.objects.get(activationcode=kod)
+        user = User.objects.get(pk=profil.user.id)
+        user.is_active=True
+        user.save()
+    except:
+        msg="Coś poszło nie tak"
+        pass
+    return render(request, 'registration/activate.html')
     
 class UserView(generic.DetailView):
     model = MyUser
